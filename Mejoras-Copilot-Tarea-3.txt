@@ -1,0 +1,13 @@
+R:generar middleware que registre:
+Método HTTP (por ejemplo, GET, POST).
+Ruta de solicitud.
+Código de estado de la respuesta.
+
+R: genera middleware para:
+Capturar las excepciones no gestionadas.
+Devuelva respuestas de error coherentes en formato JSON (por ejemplo, { "error": "Internal server error." }).
+
+R: escribir un middleware que:
+Valide los tokens de las solicitudes entrantes.
+Permita el acceso sólo a usuarios con tokens válidos.
+Devuelve una respuesta 401 Unauthorized para los tokens no válidos.

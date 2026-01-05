@@ -1,0 +1,80 @@
+R:Falta de validación de los campos de entrada del usuario (por ejemplo, nombres vacíos o correos electrónicos no válidos)
+
+Cambios principales:
+
+1. ValidateUser(): Función centralizada que valida:
+	Campos no vacíos
+	Longitud mínima/máxima
+	Formato de email con regex
+2. CreateUser: Valida nombre y email obligatorios
+3. UpdateUser: Valida solo campos proporcionados
+4. GetUserById/DeleteUser: Valida que ID > 0
+5. Mensajes claros: Errores específicos para cada validación
+
+---
+
+R:Problemas de rendimiento en el punto final GET /users
+
+Mejoras principales:
+
+1. Paginación: GET /api/users?page=1&pageSize=10 (máx 100 items)
+2. Caché: 5 minutos en memoria para lecturas frecuentes
+3. AsNoTracking(): No trackear objetos en consultas de solo lectura
+4. Índices en BD: Email único para búsquedas rápidas
+5. Respuesta paginada: Incluye metadatos (totalPages, hasNext, etc.)
+6. Invalidación de caché: Al crear/actualizar/eliminar
+
+---
+
+R:Implementar bloques try-catch para gestionar las excepciones no gestionadas.
+
+Mejoras principales:
+
+1. Middleware global: Captura excepciones no manejadas
+2. Try-catch en handlers: Captura timeouts y errores
+3. Try-catch en service: DbUpdateException para BD, InvalidOperationException para lógica
+4. Validación de emails duplicados: En create y update
+5. Códigos HTTP específicos: 408 timeout, 500 error interno
+6. Null checks: En inyección de dependencias
+7. Mensajes descriptivos: Para debugging y logging
+
+---
+
+R:Añadir validación para garantizar que solo se procesan datos de usuario válidos
+
+
+Aquí está el código con validación exhaustiva de datos:
+
+Mejoras principales:
+
+1. IUserValidator: Clase dedicada a validaciones exhaustivas
+2. Validación de Email:
+	Formato correcto con regex
+	Sin puntos consecutivos
+	Sin @ múltiples
+	Dominio válido
+3. Validación de Nombre:
+	Longitud 2-100 caracteres
+	Solo alphanumerics + espacios + caracteres especiales
+	Sin espacios múltiples
+	No solo números
+4. Normalización: Trim y lowercase para emails
+5. Múltiples errores: Retorna lista de todos los problemas
+6. Inyección en handlers: Validator disponible en endpoints
+
+---
+
+R:Optimizar las consultas o la lógica para mejorar el rendimiento.
+
+Optimizaciones principales:
+
+1. Proyección a DTO: Evita cargar datos innecesarios
+2. Regex compilado: En validator para reutilizarlo
+3. Índices BD: Email único, CreatedAt, composite Name+Email
+4. AnyAsync(): En lugar de FirstOrDefault() para verificaciones
+5. Where() antes de Select(): Filtrar antes de proyectar
+6. Response Compression: Comprime respuestas HTTP
+7. NoTracking global: No trackea por defecto
+8. Búsqueda optimizada: Con límite de 50 resultados
+9. Caché de búsqueda: Para queries frecuentes
+10. Query Tracking Behavior: Deshabilitado por defecto
